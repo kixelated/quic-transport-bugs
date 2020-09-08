@@ -10,20 +10,21 @@
 			const transport = new QuicTransport("quic-transport://localhost:4443");
 			await transport.ready;
 
-			const stream = await acceptStream(transport);
+			const stream = await transport.createBidirectionalStream();
+
+			// Write PING
+			const ping = new TextEncoder('utf-8').encode("ping")
+			const writer = stream.writable.getWriter()
+			await writer.write(ping)
+
+			// Wait for the PONG
 			const msg = await readAll(stream);
 			console.log(msg)
 
-			await writeAll(stream, "PONG");
-		}
-
-		async function acceptStream(transport) {
-			const result = await transport.receiveBidirectionalStreams().getReader().read();
-			if (result.done) {
-				throw "no stream received";
-			}
-
-			return result.value;
+			// Write the FIN
+			const fin = new TextEncoder('utf-8').encode("fin")
+			await writer.write(fin)
+			await writer.close()
 		}
 
 		async function readAll(stream) {
