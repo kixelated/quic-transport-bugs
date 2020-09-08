@@ -15,7 +15,7 @@ python3 server.py
 ```
 
 ## QuicTransport Client
-`client.html` is a simple client that establishes a connection to `localhost:4443`, creates a bidirectional stream, writes "ping" to it, reads/prints the response, and writes "fin". The page is blank; all output is via the console.
+`client.html` is a simple client that establishes a connection to `localhost:4443`, creates a bidirectional stream, writes "ping" to it, reads/prints the response, and closes the stream. The page is blank; all output is via the console.
 
 This will need to be hosted on `https://localhost:4444` with a web server and opened using a browser that allows the self-signed certificate:
 

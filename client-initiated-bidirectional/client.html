@@ -21,9 +21,8 @@
 			const msg = await readAll(stream);
 			console.log(msg)
 
-			// Write the FIN
-			const fin = new TextEncoder('utf-8').encode("fin")
-			await writer.write(fin)
+			// IMPORTANT: Close the writer now
+			// The bug does not trigger if we close before reading.
 			await writer.close()
 		}
 
@@ -41,14 +40,6 @@
 
 				msg += result.value;
 			}
-		}
-
-		async function writeAll(stream, msg) {
-			const data = new TextEncoder('utf-8').encode(msg)
-
-			const writer = stream.writable.getWriter()
-			await writer.write(data)
-			writer.close()
 		}
 
 		run();
