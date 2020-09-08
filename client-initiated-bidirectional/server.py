@@ -17,10 +17,12 @@ class TestHandler:
 
     def quic_event_received(self, event: QuicEvent) -> None:
         print(event)
+
         if isinstance(event, StreamDataReceived):
             # send the PONG once
             if not self.pong:
                 self.connection.send_stream_data(event.stream_id, 'PONG'.encode('ascii'), True)
+                self.pong = True
 
 class QuicTransportProtocol(QuicConnectionProtocol):
     def __init__(self, *args, **kwargs) -> None:
