@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<!-- only valid for localhost:4444 -->
+	<meta http-equiv="origin-trial" content="AknWFCRP+4izjSvnY/RQLumPctLqPuNa1wLve3a1J0LJeEDKkNEgkuHgkNz2YL5+GEIgQvLQsnW0t6bL/uo7KwoAAABReyJvcmlnaW4iOiJodHRwczovL2xvY2FsaG9zdDo0NDQ0IiwiZmVhdHVyZSI6IlF1aWNUcmFuc3BvcnQiLCJleHBpcnkiOjE2MDMyMTg4NTV9">
+</head>
+<body>
+	<script>
+		async function run() {
+			const transport = new QuicTransport("quic-transport://localhost:4443");
+			await transport.ready;
+
+			const result = await transport.receiveBidirectionalStreams().getReader().read();
+			if (result.done) {
+				throw "no stream received";
+			}
+
+			const stream = result.value
+
+			const decoder = new TextDecoderStream('utf-8');
+
+			const reader = stream.readable.pipeThrough(decoder).getReader();
+			while (true) {
+				const result = await reader.read();
+				if (result.done) {
+					break
+				}
+
+				console.log(result.value)
+			}
+		}
+
+		run();
+	</script>
+</body>
+</html>
